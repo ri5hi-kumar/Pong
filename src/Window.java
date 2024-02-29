@@ -4,45 +4,57 @@ import java.awt.event.KeyEvent;
 
 public class Window extends JFrame implements Runnable {
 
-    Graphics2D g2;
-    KListener keyListener = new KListener();
+    public Graphics2D g2;
+    public KListener keyListener = new KListener();
+    public Rect playerOne, playerTwo, ball;
+    public PlayerController playerController;
 
     public Window() {
-        this.setSize(Constents.SCREEN_WIDTH, Constents.SCREEN_HEIGHT);
-        this.setTitle(Constents.SCREEN_TITLE);
+        this.setSize(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
+        this.setTitle(Constants.SCREEN_TITLE);
         this.setResizable(false);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.addKeyListener(keyListener);
+
+        Constants.TOOLBAR_HEIGHT = this.getInsets().top;
+
         g2 = (Graphics2D) this.getGraphics();
+        playerOne = new Rect(40, 40, Constants.PADDLE_WIDTH, Constants.PADDLE_HEIGHT, Constants.PADDLE_COLOR);
+        playerTwo = new Rect(Constants.SCREEN_WIDTH - Constants.PADDLE_WIDTH - 40, 40, Constants.PADDLE_WIDTH, Constants.PADDLE_HEIGHT, Constants.PADDLE_COLOR);
+        ball = new Rect(Constants.SCREEN_HEIGHT / 2, Constants.SCREEN_WIDTH / 2, Constants.BALL_WIDTH, Constants.BALL_WIDTH, Constants.PADDLE_COLOR);
+
+        playerController = new PlayerController(playerOne, keyListener);
+    }
+
+    public void draw(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setColor(Color.BLACK);
+        g2.fillRect(0, 0, Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
+
+        playerOne.draw(g2);
+        playerTwo.draw(g2);
+        ball.draw(g2);
     }
 
     public void update(double dt) {
-        g2.setColor(Color.BLACK);
-        g2.fillRect(0, 0, Constents.SCREEN_WIDTH, Constents.SCREEN_HEIGHT);
+        Image dbImage = createImage(getWidth(), getHeight());
+        Graphics dbg = dbImage.getGraphics();
+        this.draw(dbg);
+        g2.drawImage(dbImage, 0, 0, this);
 
-        if(keyListener.isKeyPressed(KeyEvent.VK_UP)) {
-            System.out.println("UP key is pressed");
-        } else if(keyListener.isKeyPressed(KeyEvent.VK_DOWN)) {
-            System.out.println("DOWN key is down");
-        }
+        playerController.update(dt);
     }
 
     public void run() {
         double lastFrameTime = 0.0;
+
         while(true) {
             double time = Time.getTime();
             double deltaTime = time - lastFrameTime;
             lastFrameTime = time;
 
             update(deltaTime);
-
-            // caps the frames to 30fps
-            try {
-                Thread.sleep(30);
-            } catch(Exception e) {
-                System.out.println("Thread sleep exception");
-            }
         }
     }
 }
