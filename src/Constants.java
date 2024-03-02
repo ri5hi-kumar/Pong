@@ -7,7 +7,11 @@ public class Constants {
 
     public static final double PADDLE_WIDTH = 10;
     public static final double PADDLE_HEIGHT = 100;
-    public static final Color PADDLE_COLOR  = Color.WHITE;
+    public static final Color PLAYERONE_COLOR  = Color.GREEN;
+    public static final Color PLAYERTWO_COLOR  = Color.RED;
+    public static final Color BALL_COLOR  = Color.WHITE;
+
+
     public static final double BALL_WIDTH = 10;
     public static double PADDLE_SPEED = 250;
 

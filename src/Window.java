@@ -7,7 +7,7 @@ public class Window extends JFrame implements Runnable {
     public Graphics2D g2;
     public KListener keyListener = new KListener();
     public Rect playerOne, playerTwo, ballRect;
-    public PlayerController playerController;
+    public PlayerController playerOneController, playerTwoController;
     public Ball ball;
 
     public Window() {
@@ -21,12 +21,16 @@ public class Window extends JFrame implements Runnable {
         Constants.TOOLBAR_HEIGHT = this.getInsets().top;
 
         g2 = (Graphics2D) this.getGraphics();
-        playerOne = new Rect(40, 40, Constants.PADDLE_WIDTH, Constants.PADDLE_HEIGHT, Constants.PADDLE_COLOR);
-        playerTwo = new Rect(Constants.SCREEN_WIDTH - Constants.PADDLE_WIDTH - 40, 40, Constants.PADDLE_WIDTH, Constants.PADDLE_HEIGHT, Constants.PADDLE_COLOR);
-        ballRect = new Rect(Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2, Constants.BALL_WIDTH, Constants.BALL_WIDTH, Constants.PADDLE_COLOR);
+        playerOne = new Rect(40, (Constants.SCREEN_HEIGHT / 2) - (Constants.PADDLE_HEIGHT / 2),
+                            Constants.PADDLE_WIDTH, Constants.PADDLE_HEIGHT, Constants.PLAYERONE_COLOR);
+        playerTwo = new Rect(Constants.SCREEN_WIDTH - Constants.PADDLE_WIDTH - 40, (Constants.SCREEN_HEIGHT / 2) - (Constants.PADDLE_HEIGHT / 2),
+                            Constants.PADDLE_WIDTH, Constants.PADDLE_HEIGHT, Constants.PLAYERTWO_COLOR);
+        ballRect = new Rect(Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 2,
+                            Constants.BALL_WIDTH, Constants.BALL_WIDTH, Constants.BALL_COLOR);
         ball = new Ball(ballRect, playerOne, playerTwo);
 
-        playerController = new PlayerController(playerOne, keyListener);
+        playerOneController = new PlayerController(playerOne, keyListener);
+        playerTwoController = new PlayerController(playerTwo, keyListener);
     }
 
     public void draw(Graphics g) {
@@ -45,7 +49,8 @@ public class Window extends JFrame implements Runnable {
         this.draw(dbg);
         g2.drawImage(dbImage, 0, 0, this);
 
-        playerController.update(dt);
+        playerOneController.update(dt);
+        playerTwoController.update(dt);
         ball.update(dt);
     }
 
